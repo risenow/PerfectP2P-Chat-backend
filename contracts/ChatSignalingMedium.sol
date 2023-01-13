@@ -6,6 +6,7 @@ error ChatSignalingMedium__RecipientIsNotAParticipant();
 error ChatSignalingMedium__NameAlreadyRegistered();
 error ChatSignalingMedium__CannotConnectToItself();
 error ChatSignalingMedium__NameTooLong();
+error ChatSignalingMedium__EncKeyTooLong();
 
 contract ChatSignalingMedium {
     struct Participant {
@@ -39,6 +40,9 @@ contract ChatSignalingMedium {
     ) public {
         if (bytes(name).length > 30) {
             revert ChatSignalingMedium__NameTooLong();
+        }
+        if (publicEncryptionKey.length > 256) {
+            revert ChatSignalingMedium__EncKeyTooLong();
         }
 
         bytes32 key = sha256(abi.encodePacked(name));

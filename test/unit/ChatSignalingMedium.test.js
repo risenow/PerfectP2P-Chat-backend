@@ -6,6 +6,7 @@ const {
 } = require("hardhat/internal/hardhat-network/stack-traces/message-trace");
 
 describe("Chat Signaling Medium", async function () {
+  //DEPLOYER IS ALWAYS A PARTICIPANT BECAUSE CONTRACT CONSTRUCTOR REGISTERS EMPTY NAME
   let contract, deployer;
   beforeEach(async function () {
     deployer = (await getNamedAccounts()).deployer;
@@ -20,9 +21,12 @@ describe("Chat Signaling Medium", async function () {
     const testNameHashStr = "0x" + testNameHash.toString(enc.Hex);
     const testEncryptionKey = testNameHashStr;
     it("Should return detect unregistered address as non-participant", async function () {
-      const isParticipant = await contract.isParticipantAddress(deployer);
-      const tmp = await contract.getParticipantNameHashByAddress(deployer);
-      console.log(tmp);
+      const signers = await ethers.getSigners();
+      const user = signers[1].address;
+
+      const isParticipant = await contract.isParticipantAddress(user);
+      const tmp = await contract.getParticipantNameHashByAddress(user);
+
       assert.equal(isParticipant, false);
     });
     it("Should return detect unregistered name as non-participant", async function () {
